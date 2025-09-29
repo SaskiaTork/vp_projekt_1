@@ -8,14 +8,14 @@ const dateEt = require("./src/dateTimeET");
 const textRef = "txt/vanasonad.txt";
 const pageBegin = '<!DOCTYPE html><html lang="et"><head><meta charset="utf-8"><title>Saskia Tork, veebiprogrammerimine</title></head><body>';
 const pageBody = '<h1>Saskia Tork, veebiprogrammerimine</h1>\n\t<p>See leht on tehtud <a href="https://www.tlu.ee">Tallinna ülikool</a> veebiprogrammeerimise kursusel ja ei sisalda mõistliku sisu. Alustasin sel sügisel teist ülikooliaastat. Siiani tundub, et ees on tulemas huvitav aasta. Lisaks mainin ka, et see pilt on hetkel ajutine, niikaua kuni ma leian koha, kust ma saan selle originaalse pildi. Tahtsin kodus kõik uuesti läbi teha ja ei mäletanud kust see pärit. Ma programmeerin esimest korda, vaatame mis välja tuleb. Kui see leht töötab, siis ma arvan, et õppisin juba midagi.</p><hr> ';
-const pageBanner =<img src="vp_banner_2025_ID.jpg" alt="kursuse bänner">;
+const pageBanner ='<img src="vp_banner_2025_ID.jpg" alt="kursuse bänner">';
 const pageEnd = '\n</body>\n</html>';
 
 http.createServer(function(req, res){
 	//vaatan päringut
 	console.log("päring:" + req.url);
 	let currentUrl = url.parse(req.url);
-	console.log("parsituna: + currentUrl.pathname")
+	console.log("parsituna: + currentUrl.pathname");
 	
 	if (currentUrl.pathname === "/"){
 		res.writeHead(200, {"Content-type": "text/html"});
@@ -23,7 +23,7 @@ http.createServer(function(req, res){
 		res.write(pageBanner);
 		res.write(pageBody);
 		
-		res.write("\n\t<p>Täna on " + dateEt.weekDay() + " " + dateEt.longDate();
+		res.write("\n\t<p>Täna on " + dateEt.weekDay() + " " + dateEt.longDate()+ ".<p>");
 		return res.end();
 	}	
 	
@@ -55,14 +55,56 @@ http.createServer(function(req, res){
 	});
 	}
 	
-	else if (currentU/rl.pathname === "/vp_banner_2025_ID.jpg"){
+	else if (currentUrl.pathname === "/vp_banner_2025_ID.jpg"){
 		//liidame muidu veebilserverile kättesaamatu kataloogi "images" meie veebi failidega
-		let bannerPath = path.join(__dirname,"images");
-		fs.readFile(banner.Path + currentU/rl.pathname, (err, data) =>{
+		let bannerPath = path.join(__dirname, "images");
+		fs.readFile(path.join(bannerPath, currentUrl.pathname), (err, data) =>{
 			if(err){
 				throw(err);	
 			}
 			else {
+				res.writeHead(200, {"Content-type" : "image/jpeg" });
+				res.end(data);
+				
+			}
+		});
+	
+	}
+	
+	else if (currentUrl.pathname === "/hobid") {
+		res.writeHead(200, {"Content-type": "text/html"});
+		fs.readFile(textRef, "utf8", (err, data)=>{
+			res.write(pageBegin);
+			res.write(pageBanner);
+			res.write(pageBody);
+			
+			res.write("<h2> Mina ja vanainimese hobid</h2>");
+			res.write("<p>Mul pole hetkel palju hobisid, aga need, mis on, sobivad hästi ka vanaprouale, kes elab üksi kolme kassiga.</p>");
+			res.write("<ul>");
+			res.write("<li><b>Lugemine:</b> Ma loen päris mitu raamatut kuus, meeldib rohkem fantaasia, aga ei ütle ära ka heast krimiloost. Pildil on toodud ühe mu lemmik sarja Throne of Glass maailmakaart. </li>");
+			res.write('<img src ="toG_map.jpg" alt="Throne of Glass maailmakaart">');
+			res.write("<li><b>Telekast spordi vaatamine:</b> Olgu see siis kergejõustik, jalka või iluuisutamine.</li>");
+			res.write("<li><b>Muusika ja raadio kuulamine:</b> Kuulan palju erinevat muusikat ja otsin uusi artiste. Raadios on põnevaid saateid, näiteks Tarkadeklubi.</li>");
+			res.write("<li><b>Heegeldamine:</b> Alles hiljuti heegeldasin endale kampsuni-laadse toote.</li>");
+			res.write("</ul>");
+			res.write("<p>Ma arvan, et hetkel ongi kõik.</p>");
+			res.write(pageEnd);
+			return res.end();
+	
+		});
+	
+		
+		
+	
+	}
+	
+	else if (currentUrl.pathname === "/toG_map.jpg"){
+		//liidame muidu veebilserverile kättesaamatu kataloogi "images" meie veebi failidega
+		let bannerPath = path.join(__dirname,"images","toG_map.jpg");
+		fs.readFile(bannerPath (err, data) =>{
+			if(err){
+				throw(err);	
+			} else {
 				res.writeHead(200,{"Content-type" : "image/jpeg" });
 				res.end(data);
 				
@@ -71,7 +113,8 @@ http.createServer(function(req, res){
 	
 	}
 	
+	
 	else {
-		res.end "Viga 404, ei leia sellist veebilehte!");
+		res.end ("Viga 404, ei leia sellist veebilehte!");
 	}
 }).listen(5213);
